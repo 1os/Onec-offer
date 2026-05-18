@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="1С.ЭДО.Легаси — интеграция учётной системы с ЭДО Доки (Астрал). УПД, счёт-фактуры, маркировка, несколько организаций." />
+  <title>1С.ЭДО.Легаси — коммерческое предложение</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0e17;
+      --bg-elevated: #121a28;
+      --bg-card: #151f30;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #e8edf5;
+      --muted: #8b9bb8;
+      --accent: #3d8bfd;
+      --accent-soft: rgba(61, 139, 253, 0.15);
+      --accent-2: #22d3a6;
+      --glow: rgba(61, 139, 253, 0.45);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      --font: "Manrope", system-ui, sans-serif;
+      --header-h: 72px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(61, 139, 253, 0.22), transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(34, 211, 166, 0.12), transparent 50%),
+        radial-gradient(ellipse 50% 60% at 50% 100%, rgba(61, 139, 253, 0.08), transparent 45%),
+        var(--bg);
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      opacity: 0.035;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--header-h);
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10, 14, 23, 0.75);
+      backdrop-filter: blur(16px);
+    }
+
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo span { color: var(--accent); }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 20px;
+    }
+    nav a {
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-decoration: none;
+      padding: 6px 0;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    nav a:hover, nav a[aria-current="true"] {
+      color: var(--text);
+      text-decoration: none;
+      border-bottom-color: var(--accent);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #2563eb);
+      color: #fff;
+      box-shadow: 0 8px 32px var(--glow);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 12px 40px var(--glow);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover {
+      background: var(--accent-soft);
+      border-color: rgba(61, 139, 253, 0.35);
+    }
+
+    main { max-width: 1120px; margin: 0 auto; padding: 0 24px 80px; }
+
+    .hero {
+      padding: 56px 0 72px;
+      display: grid;
+      gap: 40px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 900px) {
+      .hero {
+        grid-template-columns: 1.1fr 0.9fr;
+        align-items: center;
+        padding: 80px 0 96px;
+      }
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.1rem);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      margin: 0 0 20px;
+    }
+    .hero p.lead {
+      font-size: 1.15rem;
+      color: var(--muted);
+      margin: 0 0 28px;
+      max-width: 520px;
+    }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .hero-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .hero-panel h2 {
+      margin: 0 0 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .flow-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-elevated);
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+      width: 100%;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .flow-step:hover, .flow-step.is-active {
+      border-color: rgba(61, 139, 253, 0.4);
+      background: rgba(61, 139, 253, 0.08);
+    }
+    .flow-step .num {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .flow-step strong { display: block; font-size: 0.95rem; margin-bottom: 4px; }
+    .flow-step span { font-size: 0.85rem; color: var(--muted); }
+
+    .flow-detail {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: var(--radius-sm);
+      background: rgba(34, 211, 166, 0.08);
+      border: 1px solid rgba(34, 211, 166, 0.2);
+      font-size: 0.9rem;
+      color: var(--muted);
+      min-height: 4.5em;
+    }
+
+    section {
+      padding: 56px 0;
+      border-top: 1px solid var(--border);
+    }
+    section h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 12px;
+    }
+    .section-intro {
+      color: var(--muted);
+      max-width: 640px;
+      margin: 0 0 32px;
+    }
+
+    .cards {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(61, 139, 253, 0.25);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+    }
+    .card .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      margin-bottom: 14px;
+    }
+    .card h3 { margin: 0 0 10px; font-size: 1.1rem; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .tab[aria-selected="true"] {
+      background: var(--accent-soft);
+      color: var(--text);
+      border-color: rgba(61, 139, 253, 0.45);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.is-visible { display: block; }
+    .tab-panel p { color: var(--muted); margin: 0 0 12px; }
+    .tab-panel ul { margin: 0; padding-left: 1.2em; color: var(--muted); }
+    .tab-panel li { margin-bottom: 8px; }
+
+    .pricing {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: 1fr;
+      align-items: stretch;
+    }
+    @media (min-width: 800px) {
+      .pricing { grid-template-columns: 1fr 1fr; }
+    }
+
+    .price-card {
+      background: linear-gradient(160deg, var(--bg-card) 0%, #0d1524 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .price-card::before {
+      content: "";
+      position: absolute;
+      top: -40%;
+      right: -20%;
+      width: 60%;
+      height: 80%;
+      background: radial-gradient(circle, var(--glow), transparent 70%);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .price-card h3 { margin: 0 0 8px; font-size: 1.25rem; position: relative; }
+    .price {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 16px 0 8px;
+      position: relative;
+    }
+    .price small { font-size: 1rem; font-weight: 600; color: var(--muted); }
+    .price-card .includes {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 0;
+      position: relative;
+    }
+    .price-card .includes li {
+      padding: 10px 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+    .price-card .includes li::before {
+      content: "✓";
+      color: var(--accent-2);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .accordion { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+    .acc-item { border-bottom: 1px solid var(--border); }
+    .acc-item:last-child { border-bottom: none; }
+    .acc-trigger {
+      width: 100%;
+      text-align: left;
+      padding: 18px 20px;
+      background: var(--bg-card);
+      border: none;
+      color: var(--text);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      transition: background 0.2s;
+    }
+    .acc-trigger:hover { background: var(--bg-elevated); }
+    .acc-trigger .chev {
+      transition: transform 0.25s;
+      color: var(--muted);
+      font-size: 1.2rem;
+    }
+    .acc-item.is-open .acc-trigger .chev { transform: rotate(180deg); }
+    .acc-panel {
+      display: none;
+      padding: 0 20px 18px;
+      background: var(--bg-card);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .acc-item.is-open .acc-panel { display: block; }
+
+    .cta-bar {
+      margin-top: 48px;
+      padding: 32px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(61, 139, 253, 0.2), rgba(34, 211, 166, 0.12));
+      border: 1px solid rgba(61, 139, 253, 0.25);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .cta-bar p { margin: 0; font-weight: 600; max-width: 480px; }
+
+    footer {
+      padding: 32px 24px 48px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s, visibility 0.25s;
+    }
+    .modal-backdrop.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: var(--shadow);
+      transform: scale(0.95);
+      transition: transform 0.25s;
+    }
+    .modal-backdrop.is-open .modal { transform: scale(1); }
+    .modal h3 { margin: 0 0 12px; }
+    .modal p { color: var(--muted); margin: 0 0 20px; font-size: 0.95rem; }
+    .modal .field { margin-bottom: 14px; }
+    .modal label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+    .modal input, .modal textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+      font: inherit;
+    }
+    .modal textarea { min-height: 88px; resize: vertical; }
+    .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-2);
+      background: rgba(34, 211, 166, 0.12);
+      padding: 6px 12px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 720px) {
+      nav ul { display: none; }
+      .mobile-nav-toggle {
+        display: flex !important;
+      }
+    }
+    .mobile-nav-toggle {
+      display: none;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .mobile-drawer {
+      position: fixed;
+      top: var(--header-h);
+      left: 0;
+      right: 0;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px 24px;
+      z-index: 99;
+      transform: translateY(-120%);
+      opacity: 0;
+      visibility: hidden;
+      transition: transform 0.3s, opacity 0.3s, visibility 0.3s;
+    }
+    .mobile-drawer.is-open {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+    .mobile-drawer ul { list-style: none; margin: 0; padding: 0; }
+    .mobile-drawer a {
+      display: block;
+      padding: 12px 0;
+      color: var(--text);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+    }
+    .mobile-drawer a:last-child { border-bottom: none; }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo" aria-label="На главную">1С<span>.</span>ЭДО<span>.</span>Легаси</a>
+      <nav aria-label="Основная навигация">
+        <ul id="nav-desktop">
+          <li><a href="#capabilities">Возможности</a></li>
+          <li><a href="#integration">Интеграция</a></li>
+          <li><a href="#scenarios">Сценарии</a></li>
+          <li><a href="#pricing">Стоимость</a></li>
+          <li><a href="#faq">Вопросы</a></li>
+        </ul>
+      </nav>
+      <button type="button" class="mobile-nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-drawer">Меню</button>
+      <button type="button" class="btn btn-primary" id="header-cta">Связаться</button>
+    </div>
+  </header>
+  <div class="mobile-drawer" id="mobile-drawer" hidden>
+    <ul>
+      <li><a href="#capabilities">Возможности</a></li>
+      <li><a href="#integration">Интеграция</a></li>
+      <li><a href="#scenarios">Сценарии</a></li>
+      <li><a href="#pricing">Стоимость</a></li>
+      <li><a href="#faq">Вопросы</a></li>
+    </ul>
+  </div>
+
+  <main>
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div>
+        <span class="badge">Коммерческое предложение</span>
+        <h1 id="hero-title">Электронный документооборот без лишней бюрократии</h1>
+        <p class="lead">
+          <strong>1С.ЭДО.Легаси</strong> — приложение для обмена документами с оператором
+          <strong>ЭДО Доки</strong> (компания «Астрал») из вашей учётной системы: УПД контрагентам в одно касание,
+          счёт-фактуры по входящим документам и подписание в веб-интерфейсе Доки.
+        </p>
+        <div class="hero-cta">
+          <button type="button" class="btn btn-primary" id="hero-cta-btn">Запросить демонстрацию</button>
+          <a class="btn btn-ghost" href="#pricing">Узнать стоимость</a>
+        </div>
+      </div>
+      <div class="hero-panel reveal" data-reveal>
+        <h2>Интерактивный сценарий</h2>
+        <p style="margin:0 0 16px;color:var(--muted);font-size:0.9rem;">Выберите шаг — ниже появится пояснение.</p>
+        <div class="flow-steps" role="tablist" aria-label="Шаги обмена">
+          <button type="button" class="flow-step is-active" role="tab" aria-selected="true" data-step="0">
+            <span class="num">1</span>
+            <div><strong>Формирование в 1С</strong><span>УПД или другой документ в привычном интерфейсе</span></div>
+          </button>
+          <button type="button" class="flow-step" role="tab" aria-selected="false" data-step="1">
+            <span class="num">2</span>
+            <div><strong>Отправка в Доки</strong><span>Одно действие — маршрутизация в ЭДО</span></div>
+          </button>
+          <button type="button" class="flow-step" role="tab" aria-selected="false" data-step="2">
+            <span class="num">3</span>
+            <div><strong>Черновики в Доки</strong><span>Документы на подпись в веб-интерфейсе</span></div>
+          </button>
+          <button type="button" class="flow-step" role="tab" aria-selected="false" data-step="3">
+            <span class="num">4</span>
+            <div><strong>Отражение в учёте</strong><span>Счёт-фактуры и регламентированный учёт</span></div>
+          </button>
+        </div>
+        <div class="flow-detail" id="flow-detail" role="tabpanel">
+          Документ создаётся в учётной системе. Пользователь не переключается между десятком окон — всё в привычной конфигурации.
+        </div>
+      </div>
+    </section>
+
+    <section id="capabilities" class="reveal" data-reveal aria-labelledby="cap-title">
+      <h2 id="cap-title">Что даёт приложение</h2>
+      <p class="section-intro">
+        Автоматизация рутины и ускорение обработки документов: исходящие УПД контрагентам и входящий поток
+        с созданием счёт-фактур — в связке с оператором ЭДО Доки.
+      </p>
+      <div class="cards">
+        <article class="card">
+          <div class="icon" aria-hidden="true">📤</div>
+          <h3>Исходящие УПД</h3>
+          <p>Отправка универсальных передаточных документов контрагентам «в одно касание» без ручного дублирования в кабинете оператора.</p>
+          <div class="pill-row"><span class="pill">Контрагенты</span><span class="pill">ЭДО</span></div>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">📥</div>
+          <h3>Входящие и счёт-фактуры</h3>
+          <p>Создание счёт-фактур по входящим электронным документам согласованно с учётной логикой вашей конфигурации.</p>
+          <div class="pill-row"><span class="pill">НДС</span><span class="pill">Учёт</span></div>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">✒️</div>
+          <h3>Подписание в Доки</h3>
+          <p>Документы, требующие подписи, появляются в разделе <strong>«Черновики»</strong> веб-интерфейса ЭДО Доки — удобная точка согласования с оператором.</p>
+          <div class="pill-row"><span class="pill">ЭП</span><span class="pill">Доки</span></div>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">🏢</div>
+          <h3>Несколько организаций</h3>
+          <p>Поддержка работы с несколькими организациями в одной базе учётной системы — единая точка интеграции для холдингов и раздельного учёта.</p>
+          <div class="pill-row"><span class="pill">Мультиорг</span><span class="pill">Одна база</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="integration" class="reveal" data-reveal aria-labelledby="int-title">
+      <h2 id="int-title">Внедрение с минимальным вмешательством</h2>
+      <p class="section-intro">
+        Приложение подключается к учётной системе через <strong>динамически подключаемый модуль</strong>.
+        Это снижает риски для рабочей базы и ускоряет запуск: не нужны глубокие доработки типовой логики.
+      </p>
+      <div class="tabs" role="tablist" aria-label="Детали интеграции">
+        <button type="button" class="tab" role="tab" aria-selected="true" data-tab="t1">Подключение</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-tab="t2">Архитектура</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-tab="t3">Развитие</button>
+      </div>
+      <div id="panel-t1" class="tab-panel is-visible" role="tabpanel">
+        <p>Модуль подключается к конфигурации штатными механизмами платформы. Основная учётная функциональность остаётся нетронутой, а обмен ЭДО выносится в отдельный контур приложения.</p>
+        <ul>
+          <li>Меньше точек соприкосновения с обновлениями конфигурации</li>
+          <li>Проще сопровождение и перенос между базами</li>
+        </ul>
+      </div>
+      <div id="panel-t2" class="tab-panel" role="tabpanel" hidden>
+        <p>Архитектура рассчитана на быстрое добавление нового функционала и сопровождение широкого спектра конфигураций, в том числе снятых с официальной поддержки производителя.</p>
+        <ul>
+          <li>Гибкое наращивание сценариев без «монолитных» вмешательств</li>
+          <li>Актуальные требования законодательства — через обновления приложения</li>
+        </ul>
+      </div>
+      <div id="panel-t3" class="tab-panel" role="tabpanel" hidden>
+        <p>Уже сейчас доступны современные сценарии на модифицированных конфигурациях, включая обмен УПД и работу с <strong>кодами маркировки</strong>. В планах — расширение на обмен <strong>электронными транспортными накладными</strong> (ЭТрН).</p>
+        <ul>
+          <li>Маркировка и смежные форматы</li>
+          <li>Дорожная карта под логистические документы</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="scenarios" class="reveal" data-reveal aria-labelledby="sc-title">
+      <h2 id="sc-title">Для кого это</h2>
+      <p class="section-intro">
+        Если вам нужен управляемый ЭДО с оператором Астрал (Доки) при сохранении привычных процессов в 1С —
+        приложение закрывает типовой разрыв между учётом и оператором ЭДО.
+      </p>
+      <div class="cards">
+        <article class="card">
+          <div class="icon" aria-hidden="true">⚡</div>
+          <h3>Скорость обработки</h3>
+          <p>Меньше ручных шагов между выпиской документа в учёте и его появлением у контрагента в ЭДО.</p>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">🧩</div>
+          <h3>Легаси-конфигурации</h3>
+          <p>Работа на конфигурациях без актуальной поддержки вендора — с переносом современных сценариев ЭДО в ваш контур.</p>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">📋</div>
+          <h3>Регламент и контроль</h3>
+          <p>Единый процесс для нескольких юрлиц в одной базе и прозрачная стыковка с веб-интерфейсом Доки для подписания.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="pricing" class="reveal" data-reveal aria-labelledby="price-title">
+      <h2 id="price-title">Лицензия и сопровождение</h2>
+      <p class="section-intro">Прозрачная годовая модель с включёнными работами по запуску.</p>
+      <div class="pricing">
+        <div class="price-card">
+          <h3>Лицензия на 12 месяцев</h3>
+          <p style="margin:0;color:var(--muted);font-size:0.95rem;position:relative;">Единый платёж за право использования и базовое сопровождение.</p>
+          <div class="price">50 000 <small>₽ / год</small></div>
+          <ul class="includes">
+            <li>Первоначальная настройка интеграции с ЭДО Доки</li>
+            <li>Исправление ошибок в рамках лицензии</li>
+            <li>Обновления функционала согласно дорожной карте продукта</li>
+          </ul>
+        </div>
+        <div class="price-card" style="border-color: rgba(34, 211, 166, 0.25);">
+          <h3>Что обсудим на встрече</h3>
+          <p style="margin:0;color:var(--muted);font-size:0.95rem;position:relative;">Короткий созвон поможет сопоставить вашу конфигурацию, количество организаций и сценарии маркировки с возможностями приложения.</p>
+          <ul class="includes">
+            <li>Состав учётной системы и релиз платформы</li>
+            <li>Объёмы документооборота и контрагенты</li>
+            <li>Требования к ЭП и учётным политикам</li>
+          </ul>
+          <button type="button" class="btn btn-primary" style="margin-top:24px;position:relative;width:100%;" id="pricing-cta">Запросить коммерческое предложение</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="reveal" data-reveal aria-labelledby="faq-title">
+      <h2 id="faq-title">Частые вопросы</h2>
+      <p class="section-intro">Краткие ответы для предварительной оценки. Детали фиксируются в техническом задании на внедрение.</p>
+      <div class="accordion" id="accordion">
+        <div class="acc-item">
+          <button type="button" class="acc-trigger" aria-expanded="false" id="acc1">
+            Где подписываются документы?
+            <span class="chev" aria-hidden="true">▼</span>
+          </button>
+          <div class="acc-panel" role="region" aria-labelledby="acc1">
+            Документы на подпись отображаются в разделе «Черновики» веб-интерфейса ЭДО Доки. Учётная система остаётся источником данных для выписки и контроля проведения.
+          </div>
+        </div>
+        <div class="acc-item">
+          <button type="button" class="acc-trigger" aria-expanded="false" id="acc2">
+            Насколько сложно внедрение?
+            <span class="chev" aria-hidden="true">▼</span>
+          </button>
+          <div class="acc-panel" role="region" aria-labelledby="acc2">
+            Используется динамически подключаемый модуль, что позволяет ограничить объём изменений в конфигурации и ускорить интеграцию по сравнению с глубокой встройкой в типовой код.
+          </div>
+        </div>
+        <div class="acc-item">
+          <button type="button" class="acc-trigger" aria-expanded="false" id="acc3">
+            Поддерживаются ли снятые с поддержки конфигурации?
+            <span class="chev" aria-hidden="true">▼</span>
+          </button>
+          <div class="acc-panel" role="region" aria-labelledby="acc3">
+            Архитектура приложения рассчитана на широкий спектр конфигураций, в том числе не находящихся на активной поддержке производителя, с перспективой развития сценариев УПД, маркировки и будущих форматов вроде ЭТрН.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta-bar reveal" data-reveal>
+      <p>Готовы показать, как 1С.ЭДО.Легаси стыкуется с вашей базой и оператором Доки.</p>
+      <button type="button" class="btn btn-primary" id="cta-bar-btn">Оставить заявку</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>Материал носит информационный характер. Условия лицензии и перечень работ уточняются в договоре.</p>
+    <p style="margin-top:8px;">© 1С.ЭДО.Легаси — коммерческое предложение. ЭДО Доки — продукт компании «Астрал».</p>
+  </footer>
+
+  <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal" style="position:relative;">
+      <button type="button" class="modal-close" id="modal-close" aria-label="Закрыть">×</button>
+      <h3 id="modal-title">Заявка</h3>
+      <p>Заполните поля — откроется почтовый клиент с готовым текстом. В поле «Кому» укажите адрес менеджера по продукту.</p>
+      <form id="lead-form">
+        <div class="field">
+          <label for="f-org">Организация</label>
+          <input id="f-org" name="org" type="text" autocomplete="organization" placeholder="ООО «Пример»" required />
+        </div>
+        <div class="field">
+          <label for="f-name">Контактное лицо</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Иванов И.И." required />
+        </div>
+        <div class="field">
+          <label for="f-email">Электронная почта</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" placeholder="you@company.ru" required />
+        </div>
+        <div class="field">
+          <label for="f-msg">Комментарий</label>
+          <textarea id="f-msg" name="msg" placeholder="Конфигурация, количество организаций, пожелания по срокам"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary">Открыть письмо</button>
+          <button type="button" class="btn btn-ghost" id="modal-cancel">Отмена</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var flowTexts = [
+        "Документ создаётся в учётной системе. Пользователь не переключается между десятком окон — всё в привычной конфигурации.",
+        "Отправка в ЭДО Доки выполняется минимальным числом действий: данные уходят оператору без ручного переноса в личный кабинет.",
+        "На стороне Доки документы, требующие подписи, попадают в «Черновики» веб-интерфейса — удобная точка для ЭП и согласования.",
+        "По входящему потоку доступно создание счёт-фактур и дальнейшее отражение в регламентированном учёте согласно настройкам интеграции."
+      ];
+
+      var steps = document.querySelectorAll(".flow-step");
+      var detail = document.getElementById("flow-detail");
+      steps.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var i = parseInt(btn.getAttribute("data-step"), 10);
+          steps.forEach(function (s) {
+            s.classList.remove("is-active");
+            s.setAttribute("aria-selected", "false");
+          });
+          btn.classList.add("is-active");
+          btn.setAttribute("aria-selected", "true");
+          if (detail && flowTexts[i]) detail.textContent = flowTexts[i];
+        });
+      });
+
+      var tabs = document.querySelectorAll(".tab");
+      tabs.forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          var id = tab.getAttribute("data-tab");
+          tabs.forEach(function (t) {
+            t.setAttribute("aria-selected", "false");
+          });
+          tab.setAttribute("aria-selected", "true");
+          document.querySelectorAll(".tab-panel").forEach(function (p) {
+            p.classList.remove("is-visible");
+            p.hidden = true;
+          });
+          var panel = document.getElementById("panel-" + id);
+          if (panel) {
+            panel.classList.add("is-visible");
+            panel.hidden = false;
+          }
+        });
+      });
+
+      document.querySelectorAll(".acc-item").forEach(function (item) {
+        var trig = item.querySelector(".acc-trigger");
+        var panel = item.querySelector(".acc-panel");
+        if (!trig || !panel) return;
+        trig.addEventListener("click", function () {
+          var open = item.classList.contains("is-open");
+          document.querySelectorAll(".acc-item").forEach(function (i) {
+            i.classList.remove("is-open");
+            var t = i.querySelector(".acc-trigger");
+            if (t) t.setAttribute("aria-expanded", "false");
+          });
+          if (!open) {
+            item.classList.add("is-open");
+            trig.setAttribute("aria-expanded", "true");
+          }
+        });
+      });
+
+      var modal = document.getElementById("modal");
+      function openModal() {
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+      function closeModal() {
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+      ["header-cta", "hero-cta-btn", "pricing-cta", "cta-bar-btn"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener("click", openModal);
+      });
+      document.getElementById("modal-close").addEventListener("click", closeModal);
+      document.getElementById("modal-cancel").addEventListener("click", closeModal);
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) closeModal();
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
+      });
+
+      document.getElementById("lead-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var org = document.getElementById("f-org").value.trim();
+        var name = document.getElementById("f-name").value.trim();
+        var email = document.getElementById("f-email").value.trim();
+        var msg = document.getElementById("f-msg").value.trim();
+        var body =
+          "Заявка по 1С.ЭДО.Легаси%n%%n%" +
+          "Организация: " + org + "%n%" +
+          "Контакт: " + name + "%n%" +
+          "E-mail: " + email + "%n%%n%" +
+          (msg ? "Комментарий:%n%" + msg + "%n%" : "");
+        body = body.replace(/%n%/g, "\n");
+        var subject = encodeURIComponent("Заявка: 1С.ЭДО.Легаси — " + org);
+        var mailto = "mailto:?subject=" + subject + "&body=" + encodeURIComponent(body);
+        window.location.href = mailto;
+        closeModal();
+      });
+
+      var drawer = document.getElementById("mobile-drawer");
+      var toggle = document.getElementById("nav-toggle");
+      toggle.addEventListener("click", function () {
+        var open = drawer.classList.toggle("is-open");
+        drawer.hidden = !open;
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      drawer.querySelectorAll("a").forEach(function (a) {
+        a.addEventListener("click", function () {
+          drawer.classList.remove("is-open");
+          drawer.hidden = true;
+          toggle.setAttribute("aria-expanded", "false");
+        });
+      });
+
+      var sections = document.querySelectorAll("main section[id]");
+      var navLinks = document.querySelectorAll('#nav-desktop a[href^="#"], #mobile-drawer a[href^="#"]');
+      var map = {};
+      navLinks.forEach(function (a) {
+        var href = a.getAttribute("href");
+        if (href && href.length > 1) {
+          if (!map[href]) map[href] = [];
+          map[href].push(a);
+        }
+      });
+      if ("IntersectionObserver" in window) {
+        var obs = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (en) {
+              if (!en.isIntersecting) return;
+              var id = "#" + en.target.id;
+              Object.keys(map).forEach(function (href) {
+                var on = href === id;
+                (map[href] || []).forEach(function (link) {
+                  if (on) link.setAttribute("aria-current", "true");
+                  else link.removeAttribute("aria-current");
+                });
+              });
+            });
+          },
+          { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+        );
+        sections.forEach(function (s) {
+          if (s.id) obs.observe(s);
+        });
+      }
+
+      var reveals = document.querySelectorAll("[data-reveal]");
+      if ("IntersectionObserver" in window) {
+        var revObs = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (en) {
+              if (en.isIntersecting) {
+                en.target.classList.add("is-visible");
+                revObs.unobserve(en.target);
+              }
+            });
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+        );
+        reveals.forEach(function (el) {
+          revObs.observe(el);
+        });
+      } else {
+        reveals.forEach(function (el) {
+          el.classList.add("is-visible");
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
