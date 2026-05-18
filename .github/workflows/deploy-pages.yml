@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -28,6 +29,10 @@ jobs:
 
       - name: Configure Pages
         uses: actions/configure-pages@v4
+        with:
+          # Включает GitHub Pages через API, если источник ещё не был
+          # полностью привязан к Actions (устраняет 404 на первом запуске).
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
