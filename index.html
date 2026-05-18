@@ -74,7 +74,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      height: var(--header-h);
+      min-height: var(--header-h);
       display: flex;
       align-items: center;
       border-bottom: 1px solid var(--border);
@@ -91,6 +91,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      min-width: 0;
     }
 
     .logo {
@@ -103,6 +104,8 @@
       gap: 10px;
     }
     .logo span { color: var(--accent); }
+    .logo-short { display: none; }
+    .logo-full { display: inline; }
 
     nav ul {
       list-style: none;
@@ -125,6 +128,12 @@
       color: var(--text);
       text-decoration: none;
       border-bottom-color: var(--accent);
+    }
+
+    @media (max-width: 1040px) {
+      .header-inner { padding: 0 16px; gap: 12px; }
+      nav ul { gap: 6px 12px; }
+      nav a { font-size: 0.8rem; }
     }
 
     .btn {
@@ -158,6 +167,23 @@
     .btn-ghost:hover {
       background: var(--accent-soft);
       border-color: rgba(61, 139, 253, 0.35);
+    }
+    a.btn { text-decoration: none; cursor: pointer; }
+    a.btn:hover { text-decoration: none; }
+
+    .btn-pricing-tg {
+      white-space: normal;
+      line-height: 1.35;
+    }
+    @media (max-width: 420px) {
+      .btn-pricing-tg { font-size: 0.82rem; padding: 11px 14px; }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
     }
 
     main { max-width: 1120px; margin: 0 auto; padding: 0 24px 80px; }
@@ -467,62 +493,6 @@
       border-top: 1px solid var(--border);
     }
 
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.65);
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.25s, visibility 0.25s;
-    }
-    .modal-backdrop.is-open {
-      opacity: 1;
-      visibility: visible;
-    }
-    .modal {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px;
-      max-width: 420px;
-      width: 100%;
-      box-shadow: var(--shadow);
-      transform: scale(0.95);
-      transition: transform 0.25s;
-    }
-    .modal-backdrop.is-open .modal { transform: scale(1); }
-    .modal h3 { margin: 0 0 12px; }
-    .modal p { color: var(--muted); margin: 0 0 20px; font-size: 0.95rem; }
-    .modal .field { margin-bottom: 14px; }
-    .modal label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
-    .modal input, .modal textarea {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--bg-elevated);
-      color: var(--text);
-      font: inherit;
-    }
-    .modal textarea { min-height: 88px; resize: vertical; }
-    .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
-    .modal-close {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 1.5rem;
-      cursor: pointer;
-      line-height: 1;
-    }
-
     .reveal {
       opacity: 0;
       transform: translateY(24px);
@@ -547,11 +517,52 @@
     }
 
     @media (max-width: 720px) {
+      html { --header-h: 56px; }
       nav ul { display: none; }
       .mobile-nav-toggle {
         display: flex !important;
       }
+      header {
+        min-height: 56px;
+      }
+      .header-inner {
+        padding: 8px 12px;
+        gap: 8px;
+      }
+      .logo {
+        flex: 1 1 auto;
+        min-width: 0;
+        font-size: clamp(0.68rem, 3.6vw, 1rem);
+      }
+      .logo-full {
+        display: block;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .btn-header-tg {
+        padding: 9px 12px;
+        font-size: 0.82rem;
+      }
+      .mobile-nav-toggle {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+      }
     }
+
+    @media (max-width: 340px) {
+      .logo-full { display: none !important; }
+      .logo-short { display: block !important; }
+      .logo {
+        font-size: 0.88rem;
+      }
+      .logo-short {
+        overflow: visible;
+        text-overflow: clip;
+      }
+    }
+
     .mobile-nav-toggle {
       display: none;
       background: var(--bg-elevated);
@@ -562,6 +573,8 @@
       font: inherit;
       font-weight: 600;
       cursor: pointer;
+      align-items: center;
+      justify-content: center;
     }
     .mobile-drawer {
       position: fixed;
@@ -600,7 +613,9 @@
 
   <header>
     <div class="header-inner">
-      <a href="#" class="logo" aria-label="На главную">1ОС<span>.</span>ЭДО<span>.</span>Легаси</a>
+      <a href="#top" class="logo" aria-label="1ОС.ЭДО.Легаси — на главную">
+        <span class="logo-full">1ОС<span>.</span>ЭДО<span>.</span>Легаси</span><span class="logo-short">1ОС<span>.</span>ЭДО</span>
+      </a>
       <nav aria-label="Основная навигация">
         <ul id="nav-desktop">
           <li><a href="#capabilities">Возможности</a></li>
@@ -610,8 +625,10 @@
           <li><a href="#faq">Вопросы</a></li>
         </ul>
       </nav>
-      <button type="button" class="mobile-nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-drawer">Меню</button>
-      <button type="button" class="btn btn-primary" id="header-cta">Связаться</button>
+      <div class="header-actions">
+        <button type="button" class="mobile-nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Открыть меню">☰</button>
+        <a class="btn btn-primary btn-header-tg" href="https://t.me/FirstOpenSystems" target="_blank" rel="noopener noreferrer">Telegram</a>
+      </div>
     </div>
   </header>
   <div class="mobile-drawer" id="mobile-drawer" hidden>
@@ -621,6 +638,7 @@
       <li><a href="#scenarios">Сценарии</a></li>
       <li><a href="#pricing">Стоимость</a></li>
       <li><a href="#faq">Вопросы</a></li>
+      <li><a href="https://t.me/FirstOpenSystems" target="_blank" rel="noopener noreferrer">Чат в Telegram (@FirstOpenSystems)</a></li>
     </ul>
   </div>
 
@@ -635,7 +653,7 @@
           счёт-фактуры по входящим документам и подписание в веб-интерфейсе Доки.
         </p>
         <div class="hero-cta">
-          <button type="button" class="btn btn-primary" id="hero-cta-btn">Запросить демонстрацию</button>
+          <a class="btn btn-primary" href="https://t.me/FirstOpenSystems" target="_blank" rel="noopener noreferrer">Написать в Telegram</a>
           <a class="btn btn-ghost" href="#pricing">Узнать стоимость</a>
         </div>
       </div>
@@ -774,14 +792,14 @@
           </ul>
         </div>
         <div class="price-card" style="border-color: rgba(34, 211, 166, 0.25);">
-          <h3>Что обсудим на встрече</h3>
-          <p style="margin:0;color:var(--muted);font-size:0.95rem;position:relative;">Короткий созвон поможет сопоставить вашу конфигурацию, количество организаций и сценарии маркировки с возможностями приложения.</p>
+          <h3>Остались вопросы</h3>
+          <p style="margin:0;color:var(--muted);font-size:0.95rem;position:relative;">Напишите в Telegram — обсудим вашу конфигурацию, количество организаций и сценарии маркировки в контексте приложения.</p>
           <ul class="includes">
             <li>Состав учётной системы и релиз платформы</li>
             <li>Объёмы документооборота и контрагенты</li>
             <li>Требования к ЭП и учётным политикам</li>
           </ul>
-          <button type="button" class="btn btn-primary" style="margin-top:24px;position:relative;width:100%;" id="pricing-cta">Запросить коммерческое предложение</button>
+          <a class="btn btn-primary btn-pricing-tg" style="margin-top:24px;position:relative;width:100%;text-align:center;box-sizing:border-box;" href="https://t.me/FirstOpenSystems" target="_blank" rel="noopener noreferrer">Чат в Telegram — @FirstOpenSystems</a>
         </div>
       </div>
     </section>
@@ -821,8 +839,8 @@
     </section>
 
     <div class="cta-bar reveal" data-reveal>
-      <p>Готовы показать, как 1ОС.ЭДО.Легаси стыкуется с вашей базой и оператором Доки.</p>
-      <button type="button" class="btn btn-primary" id="cta-bar-btn">Оставить заявку</button>
+      <p>Если нужны детали по внедрению или лицензии — напишите в Telegram, ответим в рабочем порядке.</p>
+      <a class="btn btn-primary" href="https://t.me/FirstOpenSystems" target="_blank" rel="noopener noreferrer">Открыть чат @FirstOpenSystems</a>
     </div>
   </main>
 
@@ -830,36 +848,6 @@
     <p>Материал носит информационный характер. Условия лицензии и перечень работ уточняются в договоре.</p>
     <p style="margin-top:8px;">© 1ОС.ЭДО.Легаси — коммерческое предложение. ЭДО Доки — продукт компании «Астрал».</p>
   </footer>
-
-  <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
-    <div class="modal" style="position:relative;">
-      <button type="button" class="modal-close" id="modal-close" aria-label="Закрыть">×</button>
-      <h3 id="modal-title">Заявка</h3>
-      <p>Заполните поля — откроется почтовый клиент с готовым текстом. В поле «Кому» укажите адрес менеджера по продукту.</p>
-      <form id="lead-form">
-        <div class="field">
-          <label for="f-org">Организация</label>
-          <input id="f-org" name="org" type="text" autocomplete="organization" placeholder="ООО «Пример»" required />
-        </div>
-        <div class="field">
-          <label for="f-name">Контактное лицо</label>
-          <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Иванов И.И." required />
-        </div>
-        <div class="field">
-          <label for="f-email">Электронная почта</label>
-          <input id="f-email" name="email" type="email" autocomplete="email" placeholder="you@company.ru" required />
-        </div>
-        <div class="field">
-          <label for="f-msg">Комментарий</label>
-          <textarea id="f-msg" name="msg" placeholder="Конфигурация, количество организаций, пожелания по срокам"></textarea>
-        </div>
-        <div class="modal-actions">
-          <button type="submit" class="btn btn-primary">Открыть письмо</button>
-          <button type="button" class="btn btn-ghost" id="modal-cancel">Отмена</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <script>
     (function () {
@@ -921,49 +909,6 @@
             trig.setAttribute("aria-expanded", "true");
           }
         });
-      });
-
-      var modal = document.getElementById("modal");
-      function openModal() {
-        modal.classList.add("is-open");
-        modal.setAttribute("aria-hidden", "false");
-        document.body.style.overflow = "hidden";
-      }
-      function closeModal() {
-        modal.classList.remove("is-open");
-        modal.setAttribute("aria-hidden", "true");
-        document.body.style.overflow = "";
-      }
-      ["header-cta", "hero-cta-btn", "pricing-cta", "cta-bar-btn"].forEach(function (id) {
-        var el = document.getElementById(id);
-        if (el) el.addEventListener("click", openModal);
-      });
-      document.getElementById("modal-close").addEventListener("click", closeModal);
-      document.getElementById("modal-cancel").addEventListener("click", closeModal);
-      modal.addEventListener("click", function (e) {
-        if (e.target === modal) closeModal();
-      });
-      document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
-      });
-
-      document.getElementById("lead-form").addEventListener("submit", function (e) {
-        e.preventDefault();
-        var org = document.getElementById("f-org").value.trim();
-        var name = document.getElementById("f-name").value.trim();
-        var email = document.getElementById("f-email").value.trim();
-        var msg = document.getElementById("f-msg").value.trim();
-        var body =
-          "Заявка по 1ОС.ЭДО.Легаси%n%%n%" +
-          "Организация: " + org + "%n%" +
-          "Контакт: " + name + "%n%" +
-          "E-mail: " + email + "%n%%n%" +
-          (msg ? "Комментарий:%n%" + msg + "%n%" : "");
-        body = body.replace(/%n%/g, "\n");
-        var subject = encodeURIComponent("Заявка: 1ОС.ЭДО.Легаси — " + org);
-        var mailto = "mailto:?subject=" + subject + "&body=" + encodeURIComponent(body);
-        window.location.href = mailto;
-        closeModal();
       });
 
       var drawer = document.getElementById("mobile-drawer");
