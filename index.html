@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="1С.ЭДО.Легаси — интеграция учётной системы с ЭДО Доки (Астрал). УПД, счёт-фактуры, маркировка, несколько организаций." />
-  <title>1С.ЭДО.Легаси — коммерческое предложение</title>
+  <meta name="description" content="1ОС.ЭДО.Легаси — интеграция учётной системы с ЭДО Доки (Астрал). УПД, счёт-фактуры, маркировка, несколько организаций." />
+  <title>1ОС.ЭДО.Легаси — коммерческое предложение</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -600,7 +600,7 @@
 
   <header>
     <div class="header-inner">
-      <a href="#" class="logo" aria-label="На главную">1С<span>.</span>ЭДО<span>.</span>Легаси</a>
+      <a href="#" class="logo" aria-label="На главную">1ОС<span>.</span>ЭДО<span>.</span>Легаси</a>
       <nav aria-label="Основная навигация">
         <ul id="nav-desktop">
           <li><a href="#capabilities">Возможности</a></li>
@@ -630,7 +630,7 @@
         <span class="badge">Коммерческое предложение</span>
         <h1 id="hero-title">Электронный документооборот без лишней бюрократии</h1>
         <p class="lead">
-          <strong>1С.ЭДО.Легаси</strong> — приложение для обмена документами с оператором
+          <strong>1ОС.ЭДО.Легаси</strong> — приложение для обмена документами с оператором
           <strong>ЭДО Доки</strong> (компания «Астрал») из вашей учётной системы: УПД контрагентам в одно касание,
           счёт-фактуры по входящим документам и подписание в веб-интерфейсе Доки.
         </p>
@@ -645,7 +645,7 @@
         <div class="flow-steps" role="tablist" aria-label="Шаги обмена">
           <button type="button" class="flow-step is-active" role="tab" aria-selected="true" data-step="0">
             <span class="num">1</span>
-            <div><strong>Формирование в 1С</strong><span>УПД или другой документ в привычном интерфейсе</span></div>
+            <div><strong>Формирование в 1ОС</strong><span>УПД или другой документ в привычном интерфейсе</span></div>
           </button>
           <button type="button" class="flow-step" role="tab" aria-selected="false" data-step="1">
             <span class="num">2</span>
@@ -737,7 +737,7 @@
     <section id="scenarios" class="reveal" data-reveal aria-labelledby="sc-title">
       <h2 id="sc-title">Для кого это</h2>
       <p class="section-intro">
-        Если вам нужен управляемый ЭДО с оператором Астрал (Доки) при сохранении привычных процессов в 1С —
+        Если вам нужен управляемый ЭДО с оператором Астрал (Доки) при сохранении привычных процессов в 1ОС —
         приложение закрывает типовой разрыв между учётом и оператором ЭДО.
       </p>
       <div class="cards">
@@ -821,14 +821,14 @@
     </section>
 
     <div class="cta-bar reveal" data-reveal>
-      <p>Готовы показать, как 1С.ЭДО.Легаси стыкуется с вашей базой и оператором Доки.</p>
+      <p>Готовы показать, как 1ОС.ЭДО.Легаси стыкуется с вашей базой и оператором Доки.</p>
       <button type="button" class="btn btn-primary" id="cta-bar-btn">Оставить заявку</button>
     </div>
   </main>
 
   <footer>
     <p>Материал носит информационный характер. Условия лицензии и перечень работ уточняются в договоре.</p>
-    <p style="margin-top:8px;">© 1С.ЭДО.Легаси — коммерческое предложение. ЭДО Доки — продукт компании «Астрал».</p>
+    <p style="margin-top:8px;">© 1ОС.ЭДО.Легаси — коммерческое предложение. ЭДО Доки — продукт компании «Астрал».</p>
   </footer>
 
   <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
@@ -954,13 +954,13 @@
         var email = document.getElementById("f-email").value.trim();
         var msg = document.getElementById("f-msg").value.trim();
         var body =
-          "Заявка по 1С.ЭДО.Легаси%n%%n%" +
+          "Заявка по 1ОС.ЭДО.Легаси%n%%n%" +
           "Организация: " + org + "%n%" +
           "Контакт: " + name + "%n%" +
           "E-mail: " + email + "%n%%n%" +
           (msg ? "Комментарий:%n%" + msg + "%n%" : "");
         body = body.replace(/%n%/g, "\n");
-        var subject = encodeURIComponent("Заявка: 1С.ЭДО.Легаси — " + org);
+        var subject = encodeURIComponent("Заявка: 1ОС.ЭДО.Легаси — " + org);
         var mailto = "mailto:?subject=" + subject + "&body=" + encodeURIComponent(body);
         window.location.href = mailto;
         closeModal();
