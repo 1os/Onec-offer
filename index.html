@@ -484,6 +484,13 @@
       gap: 20px;
     }
     .cta-bar p { margin: 0; font-weight: 600; max-width: 480px; }
+    .cta-bar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: flex-end;
+    }
 
     footer {
       padding: 32px 24px 48px;
@@ -544,6 +551,11 @@
       .btn-header-tg {
         padding: 9px 12px;
         font-size: 0.82rem;
+      }
+      .btn-header-pdf {
+        padding: 9px 11px;
+        font-size: 0.78rem;
+        font-weight: 700;
       }
       .mobile-nav-toggle {
         padding: 8px 10px;
@@ -627,6 +639,7 @@
       </nav>
       <div class="header-actions">
         <button type="button" class="mobile-nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Открыть меню">☰</button>
+        <a class="btn btn-ghost btn-header-pdf" href="kp-1os-edo-legasi.pdf" download="Kommercheskoe-predlozhenie-1OS-EDO-Legacy.pdf" title="Скачать коммерческое предложение для печати (PDF)">PDF</a>
         <a class="btn btn-primary btn-header-tg" href="https://t.me/FirstOpenSystems" target="_blank" rel="noopener noreferrer">Telegram</a>
       </div>
     </div>
@@ -639,6 +652,7 @@
       <li><a href="#pricing">Стоимость</a></li>
       <li><a href="#faq">Вопросы</a></li>
       <li><a href="https://t.me/FirstOpenSystems" target="_blank" rel="noopener noreferrer">Чат в Telegram (@FirstOpenSystems)</a></li>
+      <li><a href="kp-1os-edo-legasi.pdf" download="Kommercheskoe-predlozhenie-1OS-EDO-Legacy.pdf">Скачать КП в PDF (для печати)</a></li>
     </ul>
   </div>
 
@@ -655,6 +669,7 @@
         <div class="hero-cta">
           <a class="btn btn-primary" href="https://t.me/FirstOpenSystems" target="_blank" rel="noopener noreferrer">Написать в Telegram</a>
           <a class="btn btn-ghost" href="#pricing">Узнать стоимость</a>
+          <a class="btn btn-ghost btn-pdf" href="kp-1os-edo-legasi.pdf" download="Kommercheskoe-predlozhenie-1OS-EDO-Legacy.pdf">Скачать PDF для печати</a>
         </div>
       </div>
       <div class="hero-panel reveal" data-reveal>
@@ -790,6 +805,9 @@
             <li>Исправление ошибок в рамках лицензии</li>
             <li>Обновления функционала согласно дорожной карте продукта</li>
           </ul>
+          <p style="margin:16px 0 0;position:relative;">
+            <a class="btn btn-ghost btn-pdf" style="width:100%;text-align:center;box-sizing:border-box;" href="kp-1os-edo-legasi.pdf" download="Kommercheskoe-predlozhenie-1OS-EDO-Legacy.pdf">Скачать PDF коммерческого предложения</a>
+          </p>
         </div>
         <div class="price-card" style="border-color: rgba(34, 211, 166, 0.25);">
           <h3>Остались вопросы</h3>
@@ -840,7 +858,10 @@
 
     <div class="cta-bar reveal" data-reveal>
       <p>Если нужны детали по внедрению или лицензии — напишите в Telegram, ответим в рабочем порядке.</p>
-      <a class="btn btn-primary" href="https://t.me/FirstOpenSystems" target="_blank" rel="noopener noreferrer">Открыть чат @FirstOpenSystems</a>
+      <div class="cta-bar-actions">
+        <a class="btn btn-primary" href="https://t.me/FirstOpenSystems" target="_blank" rel="noopener noreferrer">Открыть чат @FirstOpenSystems</a>
+        <a class="btn btn-ghost btn-pdf" href="kp-1os-edo-legasi.pdf" download="Kommercheskoe-predlozhenie-1OS-EDO-Legacy.pdf">Скачать PDF для печати</a>
+      </div>
     </div>
   </main>
 
