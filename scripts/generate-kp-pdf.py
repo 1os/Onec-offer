@@ -22,13 +22,33 @@ from reportlab.platypus import (
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "kp-1os-edo-legasi.pdf"
 
-FONT_REG = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-FONT_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+FONT_CANDIDATES = {
+    "regular": [
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/System/Library/Fonts/Supplemental/Arial.ttf",
+        "/Library/Fonts/Arial.ttf",
+    ],
+    "bold": [
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+        "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+        "/Library/Fonts/Arial Bold.ttf",
+    ],
+}
+
+
+def resolve_font(kind: str) -> str:
+    for path in FONT_CANDIDATES[kind]:
+        if Path(path).is_file():
+            return path
+    raise FileNotFoundError(
+        "Не найден шрифт с кириллицей. Установите DejaVu Sans "
+        "или проверьте наличие Arial в системе."
+    )
 
 
 def main() -> None:
-    pdfmetrics.registerFont(TTFont("DejaVu", FONT_REG))
-    pdfmetrics.registerFont(TTFont("DejaVuBd", FONT_BOLD))
+    pdfmetrics.registerFont(TTFont("DejaVu", resolve_font("regular")))
+    pdfmetrics.registerFont(TTFont("DejaVuBd", resolve_font("bold")))
 
     doc = SimpleDocTemplate(
         str(OUT),
@@ -138,6 +158,16 @@ def main() -> None:
             ),
             ListItem(
                 Paragraph(
+                    "<b>ЭПД и ЭТрН.</b> Синхронизация электронных перевозочных документов "
+                    "с оператором: реестр «Логистика», просмотр ЭТрН, импорт и подписи "
+                    "через API раздела EPD.",
+                    normal,
+                ),
+                leftIndent=12,
+                bulletColor=colors.HexColor("#2563eb"),
+            ),
+            ListItem(
+                Paragraph(
                     "<b>Несколько организаций.</b> Поддержка работы с несколькими "
                     "организациями в одной базе учётной системы.",
                     normal,
@@ -175,8 +205,9 @@ def main() -> None:
     story.append(
         Paragraph(
             "Поддерживаются современные сценарии на модифицированных конфигурациях, "
-            "включая обмен УПД и работу с <b>кодами маркировки</b>. Планируется расширение "
-            "возможностей по обмену <b>электронными транспортными накладными</b> (ЭТрН).",
+            "включая обмен УПД, работу с <b>кодами маркировки</b> и "
+            "<b>электронными перевозочными документами (ЭПД)</b>, в том числе ЭТрН. "
+            "Обмен с оператором реализован через API раздела EPD.",
             normal,
         )
     )
